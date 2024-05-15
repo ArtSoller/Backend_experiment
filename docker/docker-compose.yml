@@ -7,12 +7,12 @@ services:
       context: ./../
       dockerfile: ./docker/php-fpm/Dockerfile
       args:
-        - PUID=${PUID}
-        - PGID=${PGID}
         - INSTALL_XDEBUG=${INSTALL_XDEBUG}
     volumes:
       - ./../:/var/www/
 #      - ./docker/php-fpm/xdebug.ini:/usr/local/etc/php/conf.d/docker-php-ext-xdebug.ini
+    depends_on:
+      - postgres
 
   nginx:
     container_name: nginx
