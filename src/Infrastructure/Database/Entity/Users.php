@@ -3,11 +3,11 @@
 namespace App\Infrastructure\Database\Entity;
 
 use App\Infrastructure\Database\Repository\UsersRepository;
-use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 
 #[ORM\Entity(repositoryClass: UsersRepository::class)]
-class Users
+class Users implements \Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface
 {
     #[ORM\Id]
     #[ORM\GeneratedValue]
@@ -27,7 +27,7 @@ class Users
     #[ORM\JoinColumn(name: 'id_user', referencedColumnName: 'id_user')]
     #[ORM\InverseJoinColumn(name: 'id_role', referencedColumnName: 'id_role')]
     #[ORM\ManyToMany(targetEntity: Roles::class)]
-    private ArrayCollection $users_roles;
+    private Collection $users_roles;
 
     public function getId_user(): ?int
     {
