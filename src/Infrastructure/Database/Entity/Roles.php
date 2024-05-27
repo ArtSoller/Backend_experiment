@@ -11,14 +11,14 @@ class Roles
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
-    private ?int $id = null;
+    private ?int $id_role = null;
 
     #[ORM\Column(length: 255)]
     private ?string $name = null;
 
-    public function getId(): ?int
+    public function getId_role(): ?int
     {
-        return $this->id;
+        return $this->id_role;
     }
 
     public function getName(): ?string

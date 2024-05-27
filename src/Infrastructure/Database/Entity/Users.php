@@ -3,6 +3,7 @@
 namespace App\Infrastructure\Database\Entity;
 
 use App\Infrastructure\Database\Repository\UsersRepository;
+use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping as ORM;
 
 #[ORM\Entity(repositoryClass: UsersRepository::class)]
@@ -22,16 +23,15 @@ class Users
     #[ORM\Column(length: 255)]
     private ?string $password = null;
 
-    public function getIdUser(): ?int
+    #[ORM\JoinTable(name: 'users_roles')]
+    #[ORM\JoinColumn(name: 'id_user', referencedColumnName: 'id_user')]
+    #[ORM\InverseJoinColumn(name: 'id_role', referencedColumnName: 'id_role')]
+    #[ORM\ManyToMany(targetEntity: Roles::class)]
+    private ArrayCollection $users_roles;
+
+    public function getId_user(): ?int
     {
         return $this->id_user;
-    }
-
-    public function setIdUser(int $id_user): static
-    {
-        $this->id_user = $id_user;
-
-        return $this;
     }
 
     public function getUsername(): ?string
@@ -66,6 +66,18 @@ class Users
     public function setPassword(string $password): static
     {
         $this->password = $password;
+
+        return $this;
+    }
+
+    public function getUsersRoles(): ArrayCollection
+    {
+        return $this->users_roles;
+    }
+
+    public function setUsersRoles(ArrayCollection $users_roles): static
+    {
+        $this->users_roles = $users_roles;
 
         return $this;
     }
