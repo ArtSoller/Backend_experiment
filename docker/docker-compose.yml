@@ -1,18 +1,13 @@
-version: "3.8"
-
 services:
   php-fpm:
     container_name: php-fpm
     build:
       context: ./../
       dockerfile: ./docker/php-fpm/Dockerfile
-      args:
-        - PUID=${PUID}
-        - PGID=${PGID}
-        - INSTALL_XDEBUG=${INSTALL_XDEBUG}
     volumes:
       - ./../:/var/www/
-#      - ./docker/php-fpm/xdebug.ini:/usr/local/etc/php/conf.d/docker-php-ext-xdebug.ini
+    depends_on:
+      - postgres
 
   nginx:
     container_name: nginx
@@ -24,3 +19,18 @@ services:
       - ..:/var/www:rw
     depends_on:
       - php-fpm
+
+  postgres:
+    container_name: postgres
+    image: postgres:latest
+    ports:
+      - ${POSTGRES_PORT}:5432
+    environment:
+      POSTGRES_DB: ${POSTGRES_DB}
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+    volumes:
+      - ./db_data:/var/lib/postgresql/data:rw
+
+volumes:
+  db_data:
