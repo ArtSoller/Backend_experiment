@@ -9,26 +9,24 @@ security:
                 class: App\Infrastructure\Database\Entity\Users
                 property: email
     firewalls:
-        dev:
-            pattern: ^/(_(profiler|wdt)|css|images|js)/
-            security: false
         login:
             pattern: ^/api/login
             stateless: true
             json_login:
                 username_path: email
-                check_path: /api/login_check
+                check_path: api_login
                 success_handler: lexik_jwt_authentication.handler.authentication_success
                 failure_handler: lexik_jwt_authentication.handler.authentication_failure
-
         api:
             pattern: ^/api
             stateless: true
             jwt: ~
-
+        dev:
+            pattern: ^/(_(profiler|wdt)|css|images|js)/
+            security: false
         main:
             json_login:
-                check_path: login
+                check_path: api_login
             access_token:
                 token_handler: App\Security\AccessTokenHandler
             login_throttling: null
@@ -36,8 +34,9 @@ security:
             provider: app_user_provider
 
     access_control:
-        - { path: ^/api/login, roles: IS_AUTHENTICATED_ANONYMOUSLY }
-        - { path: ^/api,       roles: IS_AUTHENTICATED_FULLY }
+        - { path: ^/api/login, roles: PUBLIC_ACCESS }
+        - { path: ^/api/signup, roles: PUBLIC_ACCESS }
+        - { path: ^/api/helloworld,       roles: PUBLIC_ACCESS }
 
 
 
