@@ -12,34 +12,31 @@ security:
         login:
             pattern: ^/api/login
             stateless: true
+            provider: app_user_provider
             json_login:
+                check_path: /api/login
                 username_path: email
-                check_path: api_login
                 success_handler: lexik_jwt_authentication.handler.authentication_success
                 failure_handler: lexik_jwt_authentication.handler.authentication_failure
         api:
-            pattern: ^/api
+            pattern: ^/api/
             stateless: true
             jwt: ~
         dev:
             pattern: ^/(_(profiler|wdt)|css|images|js)/
             security: false
         main:
-            json_login:
-                check_path: api_login
-            access_token:
-                token_handler: App\Security\AccessTokenHandler
-            login_throttling: null
             lazy: true
             provider: app_user_provider
-
+            # activate different ways to authenticate
+            # https://symfony.com/doc/current/security.html#the-firewall
+            # https://symfony.com/doc/current/security/impersonating_user.html
+            # switch_user: true
+    # Easy way to control access for large sections of your site
+    # Note: Only the *first* access control that matches will be used
     access_control:
-        - { path: ^/api/login, roles: PUBLIC_ACCESS }
-        - { path: ^/api/signup, roles: PUBLIC_ACCESS }
-        - { path: ^/api/helloworld,       roles: PUBLIC_ACCESS }
-
-
-
+    # - { path: ^/admin, roles: ROLE_ADMIN }
+    # - { path: ^/profile, roles: ROLE_USER }
 when@test:
     security:
         password_hashers:
