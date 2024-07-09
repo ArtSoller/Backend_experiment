@@ -43,6 +43,10 @@ class Users implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\ManyToMany(targetEntity: Currencies::class)]
     private Collection $alerts;
 
+    #[ORM\ManyToOne(targetEntity: GenerationRules::class, inversedBy: "users")]
+    #[ORM\JoinColumn(name: "generation_rule_id", referencedColumnName: "id", nullable: true)]
+    private ?GenerationRules $generationRule = null;
+
 //    #[ORM\ManyToOne(targetEntity: Subscriptions::class, inversedBy: "users")]
 //    #[ORM\JoinColumn(name: "subscription_id", referencedColumnName: "sub_id", nullable: true)]
 //    private Collection $subscription;
@@ -92,7 +96,9 @@ class Users implements UserInterface, PasswordAuthenticatedUserInterface
             return $role->getName();
         })->toArray();
 
-        $roles[] = 'ROLE_USER';
+        if (!in_array('ROLE_USER', $roles)) {
+            $roles[] = 'ROLE_USER';
+        }
 
         return $roles;
     }
@@ -130,6 +136,16 @@ class Users implements UserInterface, PasswordAuthenticatedUserInterface
 //        return $this;
 //    }
 
+    public function getGenerationRule(): ?GenerationRules
+    {
+        return $this->generationRule;
+    }
+
+    public function setGenerationRule(?GenerationRules $generationRule): static
+    {
+        $this->generationRule = $generationRule;
+        return $this;
+    }
 
     public function getUserIdentifier(): string
     {
