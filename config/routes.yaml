@@ -7,6 +7,9 @@ controllers:
 api_login_check:
     path: /api/login_check
 
+send_email:
+    path: /send-email
+    controller: App\Infrastructure\Controllers\SendEmailController::sendEmail
 #not_found:
 #    path: /{catchall}
 #    controller: App\Infrastructure\Controllers\NotFoundController::notFound
