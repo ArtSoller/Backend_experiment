@@ -14,16 +14,17 @@ use Symfony\Component\Routing\Attribute\Route;
 
 class LoginController extends AbstractController
 {
-    #[Route('/api/version1/login', name: 'api_v1_login', methods: ['GET'])]
+    #[Route('/api/version1/login', name: 'api_v1_login', methods: ['POST'])]
     public function login(Request $request,
                           UserPasswordHasherInterface $passwordHasher,
                           EntityManagerInterface $entityManager,
                           JWTTokenManagerInterface $jwtManager): Response
     {
-        $email = $request->query->get('email');
-        $password = $request->query->get('password');
+        $data = json_decode($request->getContent(), true);
 
-        if (!$email || !$password) {
+        $email = $data['email'] ?? null;
+        $password = $data['password'] ?? null;
+        if (!$email && !$password) {
             return $this->json(['message' => 'Missing required parameters'], Response::HTTP_BAD_REQUEST);
         }
 
@@ -37,7 +38,9 @@ class LoginController extends AbstractController
             ['expires_in' => '3600',
                 'user_id' => $user->getUserId()->toRfc4122(), # 01HZQTM6EY3Y23J57HN9207V99 -> 018fee3d-8585-7020-77e6-e68c66e393b2
                 'email' => $email]);
-        return $this->json(['message' => 'User authenticated successfully',
-            'access_token' => $token],
-            Response::HTTP_CREATED);    }
+        return $this->json(
+            ['code' => 201,
+                'message' => 'User authenticated successfully',
+                'access_token' => $token],
+                Response::HTTP_CREATED);    }
 }
