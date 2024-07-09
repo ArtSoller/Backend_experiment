@@ -3,14 +3,15 @@ FROM php:8.2-fpm
 #RUN apk add --no-cache curl git build-base zlib-dev oniguruma-dev autoconf bash
 #RUN apk add --update linux-headers && pecl install xdebug && docker-php-ext-enable xdebug
 
-RUN apt-get update && apt-get install -y \
+RUN apt-get update -y && apt-get install -y \
     git \
     unzip \
     curl \
     libicu-dev \
     libpq-dev \
-    && pecl install xdebug && docker-php-ext-enable xdebug \
-    && docker-php-ext-install intl pdo_pgsql
+    libxslt-dev && \
+    docker-php-ext-install intl pdo_pgsql xsl && \
+    pecl install xdebug && docker-php-ext-enable xdebug
 
 COPY ./docker/php-fpm/xdebug.ini /usr/local/etc/php/conf.d/docker-php-ext-xdebug.ini
 #COPY ./docker/php-fpm/xdebug.ini /usr/local/etc/php/conf.d/docker-php-ext-xdebug.ini
