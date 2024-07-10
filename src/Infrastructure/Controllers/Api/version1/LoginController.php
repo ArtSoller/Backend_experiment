@@ -42,5 +42,5 @@ class LoginController extends AbstractController
             ['code' => 201,
                 'message' => 'User authenticated successfully',
                 'access_token' => $token],
-                Response::HTTP_CREATED);    }
+            Response::HTTP_CREATED);    }
 }

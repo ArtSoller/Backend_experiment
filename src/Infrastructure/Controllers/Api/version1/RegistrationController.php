@@ -55,8 +55,8 @@ class RegistrationController extends AbstractController
                 'email' => $email]);
         return $this->json(
             ['code' => 201,
-            'message' => 'User created successfully',
-            'access_token' => $token],
+                'message' => 'User created successfully',
+                'access_token' => $token],
             Response::HTTP_CREATED);
     }
 }
