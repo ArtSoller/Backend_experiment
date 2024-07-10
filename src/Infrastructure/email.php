@@ -66,10 +66,10 @@ try {
     $mailer->send($email);
 
     // Display custom successful message
-    die('<style> * { font-size: 100px; color: #444; background-color: #4eff73; } </style><pre><h1>&#127881;Email sent successfully!</h1></pre>');
+//    die('<style> * { font-size: 100px; color: #444; background-color: #4eff73; } </style><pre><h1>&#127881;Email sent successfully!</h1></pre>');
 } catch (TransportExceptionInterface $e) {
     // Display custom error message
-    die('<style>* { font-size: 100px; color: #fff; background-color: #ff4e4e; }</style><pre><h1>&#128544;Error!</h1></pre>');
+//    die('<style>* { font-size: 100px; color: #fff; background-color: #ff4e4e; }</style><pre><h1>&#128544;Error!</h1></pre>');
 
     // Display real errors
     # echo '<pre style="color: red;">', print_r($e, TRUE), '</pre>';
