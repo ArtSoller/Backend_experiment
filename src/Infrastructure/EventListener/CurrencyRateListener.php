@@ -3,52 +3,47 @@ namespace App\Infrastructure\EventListener;
 
 use Doctrine\ORM\Event\PostUpdateEventArgs;
 use App\Infrastructure\Database\Entity\Currencies;
+use Symfony\Component\Mailer\Mailer;
 use Symfony\Component\Mailer\MailerInterface;
+use Symfony\Component\Mailer\Transport;
 use Symfony\Component\Mime\Email;
 use Symfony\Component\Mailer\Exception\TransportExceptionInterface;
-use Symfony\Component\Mailer\Transport;
-use Symfony\Component\Mailer\Mailer;
+use Psr\Log\LoggerInterface;
 
 class CurrencyRateListener
 {
-private $mailerInterface;
+    private MailerInterface $mailer;
+    public function __construct(MailerInterface $mailer)
+    {
+        $this->mailer = $mailer;
+    }
 
-public function __construct(MailerInterface $mailerInterface)
-{
-$this->mailerInterface = $mailerInterface;
-}
+    public function postUpdate(PostUpdateEventArgs $event): void
+    {
+        $entity = $event->getObject();
 
-public function postUpdate(PostUpdateEventArgs $event): void
-{
-$entity = $event->getObject();
+        if ($entity instanceof Currencies && $entity->getName() === 'EURO' && $entity->getRate() < 95) {
+            $this->sendEmailAlert($entity);
+        }
+    }
 
-// Проверяем, если это рубль и курс ниже 86
-if ($entity instanceof Currencies && $entity->getName() === 'RUB' && $entity->getRate() < 86) {
-$this->sendEmailAlert($entity);
-}
-}
+    private function sendEmailAlert(Currencies $currency): void
+    {
+        $transport = Transport::fromDsn('smtp://samaelasalart1@gmail.com:mkgtalykpbrubbra@smtp.gmail.com:587');
+        $this->mailer = new Mailer($transport);
+        $email = (new Email())
+            ->from('samaelasalart1@gmail.com')
+            ->to('onebelouspiece@gmail.com')
+            ->subject('Currency Alert: EURO Rate Above 95')
+            ->text('The plain text version of the message.')
+            ->html('
+            <h1 style="color: #ff0000;">
+                The rate of EURO is above 95. Current rate: ' . $currency->getRate() . '
+            </h1>');
 
-private function sendEmailAlert(Currencies $currency): void
-{
-// Создаем транспорт и экземпляр Mailer
-$transport = Transport::fromDsn('smtp://samaelasalart1@gmail.com:mkgtalykpbrubbra@smtp.gmail.com:587');
-$mailer = new Mailer($transport);
-
-$email = (new Email())
-->from('samaelasalart1@gmail.com')
-->to('onebelouspiece@gmail.com')
-->subject('Currency Alert: RUB Rate Drop')
-->text('The plain text version of the message.')
-->html('
-<h1 style="color: #ff0000;">
-    The rate of RUB has dropped below 86. Current rate: ' . $currency->getRate() . '
-</h1>
-');
-
-try {
-$mailer->send($email);
-} catch (TransportExceptionInterface $e) {
-// Обработка ошибок отправки email
-}
-}
+        try {
+            $this->mailer->send($email);
+        } catch (TransportExceptionInterface $e) {
+        }
+    }
 }
