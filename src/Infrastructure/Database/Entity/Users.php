@@ -43,9 +43,9 @@ class Users implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\ManyToMany(targetEntity: Currencies::class)]
     private Collection $alerts;
 
-    #[ORM\ManyToOne(targetEntity: GenerationRules::class, inversedBy: "users")]
-    #[ORM\JoinColumn(name: "generation_rule_id", referencedColumnName: "id", nullable: true)]
-    private ?GenerationRules $generationRule = null;
+//    #[ORM\ManyToOne(targetEntity: GenerationRules::class, inversedBy: "users")]
+//    #[ORM\JoinColumn(name: "generation_rule_id", referencedColumnName: "id", nullable: true)]
+//    private ?GenerationRules $generationRule = null;
 
 //    #[ORM\ManyToOne(targetEntity: Subscriptions::class, inversedBy: "users")]
 //    #[ORM\JoinColumn(name: "subscription_id", referencedColumnName: "sub_id", nullable: true)]
