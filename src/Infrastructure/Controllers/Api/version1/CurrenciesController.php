@@ -13,7 +13,7 @@ use Symfony\Component\Routing\Attribute\Route;
 class CurrenciesController extends AbstractController
 {
     #[Route('/api/version1/currencies', name: 'api_version1_currencies', methods: ['GET'])]
-    public function searchCountries(Request $request, EntityManagerInterface $entityManager): JsonResponse
+    public function getCurrencies(Request $request, EntityManagerInterface $entityManager): JsonResponse
     {
         $searchTerm = $request->query->get('search');
 
@@ -28,7 +28,7 @@ class CurrenciesController extends AbstractController
         $response = [];
         foreach ($currencies as $currency) {
             $response[] = [
-                'id' => $currency->getCountryId(),
+                'id' => $currency->getCurrencyId(),
                 'name' => $currency->getName(),
             ];
         }
