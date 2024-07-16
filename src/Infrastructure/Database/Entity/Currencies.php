@@ -3,6 +3,8 @@
 namespace App\Infrastructure\Database\Entity;
 
 use App\Infrastructure\Database\Repository\CurrenciesRepository;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 
 #[ORM\Entity(repositoryClass: CurrenciesRepository::class)]
@@ -25,6 +27,14 @@ class Currencies
     public function getCurrencyId(): ?int
     {
         return $this->currency_id;
+    }
+
+    #[ORM\OneToMany(targetEntity: Alerts::class, mappedBy: 'currency')]
+    private Collection $alerts;
+
+    public function __construct()
+    {
+        $this->alerts = new ArrayCollection();
     }
 
     public function getName(): ?string
@@ -59,6 +69,18 @@ class Currencies
     public function setExpert(string $expert_rating): static
     {
         $this->expert_rating = $expert_rating;
+
+        return $this;
+    }
+
+    public function getAlerts(): ArrayCollection
+    {
+        return $this->alerts;
+    }
+
+    public function setAlerts(ArrayCollection $alerts): static
+    {
+        $this->alerts = $alerts;
 
         return $this;
     }

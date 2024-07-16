@@ -37,25 +37,13 @@ class Users implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\ManyToMany(targetEntity: Roles::class)]
     private Collection $user_roles;
 
-    #[ORM\JoinTable(name: 'alerts')]
-    #[ORM\JoinColumn(name: 'user_id', referencedColumnName: 'user_id')]
-    #[ORM\InverseJoinColumn(name: 'currency_id', referencedColumnName: 'currency_id')]
-    #[ORM\ManyToMany(targetEntity: Currencies::class)]
+    #[ORM\OneToMany(targetEntity: Alerts::class, mappedBy: 'user')]
     private Collection $alerts;
-
-//    #[ORM\ManyToOne(targetEntity: GenerationRules::class, inversedBy: "users")]
-//    #[ORM\JoinColumn(name: "generation_rule_id", referencedColumnName: "id", nullable: true)]
-//    private ?GenerationRules $generationRule = null;
-
-//    #[ORM\ManyToOne(targetEntity: Subscriptions::class, inversedBy: "users")]
-//    #[ORM\JoinColumn(name: "subscription_id", referencedColumnName: "sub_id", nullable: true)]
-//    private Collection $subscription;
 
     public function __construct()
     {
         $this->user_roles = new ArrayCollection();
-        $this->user_alerts = new ArrayCollection();
-//        $this->subscription = new ArrayCollection();
+        $this->alerts = new ArrayCollection();
     }
     public function getUserId(): ?Ulid
     {
