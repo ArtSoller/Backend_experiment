@@ -24,8 +24,6 @@ doctrine:
                 alias: App
         controller_resolver:
             auto_mapping: true
-        event_subscribers:
-            - App\Infrastructure\EventListener\CurrencyRateListener
 
 when@test:
     doctrine:
