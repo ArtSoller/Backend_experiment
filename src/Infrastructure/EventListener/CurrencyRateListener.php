@@ -3,46 +3,55 @@ namespace App\Infrastructure\EventListener;
 
 use Doctrine\ORM\Event\PostUpdateEventArgs;
 use App\Infrastructure\Database\Entity\Currencies;
+use App\Infrastructure\Database\Entity\Alerts;
 use Symfony\Component\Mailer\Mailer;
-use Symfony\Component\Mailer\MailerInterface;
 use Symfony\Component\Mailer\Transport;
 use Symfony\Component\Mime\Email;
 use Symfony\Component\Mailer\Exception\TransportExceptionInterface;
-use Psr\Log\LoggerInterface;
+use Doctrine\ORM\EntityManagerInterface;
+
 
 class CurrencyRateListener
 {
-    private MailerInterface $mailer;
-    public function __construct(MailerInterface $mailer)
+    private EntityManagerInterface $entityManager;
+
+    public function __construct(EntityManagerInterface $entityManager)
     {
-        $this->mailer = $mailer;
+        $this->entityManager = $entityManager;
     }
 
     public function postUpdate(PostUpdateEventArgs $event): void
     {
         $entity = $event->getObject();
 
-        if ($entity instanceof Currencies && $entity->getName() === 'EURO' && $entity->getRate() < 95) {
-            $this->sendEmailAlert($entity);
+        if ($entity instanceof Currencies) {
+            // Получить все алерты для данной валюты
+            $alerts = $this->entityManager->getRepository(Alerts::class)->findBy(['currencies' => $entity]);
+
+            foreach ($alerts as $alert) {
+                if ($entity->getRate() < $alert->getAlertRate()) {
+                    $this->sendEmailAlert($alert, $entity);
+                }
+            }
         }
     }
 
-    private function sendEmailAlert(Currencies $currency): void
+    private function sendEmailAlert(Alerts $alert, Currencies $currency): void
     {
         $transport = Transport::fromDsn('smtp://samaelasalart1@gmail.com:mkgtalykpbrubbra@smtp.gmail.com:587');
-        $this->mailer = new Mailer($transport);
+        $mailer = new Mailer($transport);
         $email = (new Email())
             ->from('samaelasalart1@gmail.com')
             ->to('onebelouspiece@gmail.com')
-            ->subject('Currency Alert: EURO Rate Above 95')
+            ->subject('Currency Alert: ' . $currency->getName() . ' Rate Alert')
             ->text('The plain text version of the message.')
             ->html('
             <h1 style="color: #ff0000;">
-                The rate of EURO is above 95. Current rate: ' . $currency->getRate() . '
+                The rate of ' . $currency->getName() . ' is below/above ' . $alert->getAlertRate() . '. Current rate: ' . $currency->getRate() . '
             </h1>');
 
         try {
-            $this->mailer->send($email);
+            $mailer->send($email);
         } catch (TransportExceptionInterface $e) {
         }
     }

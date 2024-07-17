@@ -20,5 +20,11 @@ services:
             - '../src/Entity/'
             - '../src/Infrastructure/Kernel.php'
 
+    App\Infrastructure\EventListener\CurrencyRateListener:
+        arguments:
+            $entityManager: '@doctrine.orm.entity_manager'
+        tags:
+            - { name: doctrine.event_listener, event: postUpdate }
+
     # add more service definitions when explicit configuration is needed
     # please note that last definitions always *replace* previous ones
