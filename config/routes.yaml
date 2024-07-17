@@ -10,6 +10,11 @@ api_login_check:
 send_email:
     path: /send-email
     controller: App\Infrastructure\Controllers\SendEmailController::sendEmail
+
+update_currency_rate:
+    path: /update-currency-rate
+    controller: App\Infrastructure\Controllers\updateCurrencyController::updateCurrencyRate
+    methods: [GET]
 #not_found:
 #    path: /{catchall}
 #    controller: App\Infrastructure\Controllers\NotFoundController::notFound
