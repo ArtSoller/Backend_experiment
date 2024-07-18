@@ -3,7 +3,7 @@ namespace App\Infrastructure\EventListener;
 
 use Doctrine\ORM\Event\PostUpdateEventArgs;
 use App\Infrastructure\Database\Entity\Currencies;
-use App\Infrastructure\Database\Entity\Alerts;
+use App\Infrastructure\Database\Entity\Rules;
 use Symfony\Component\Mailer\Mailer;
 use Symfony\Component\Mailer\Transport;
 use Symfony\Component\Mime\Email;
@@ -26,17 +26,19 @@ class CurrencyRateListener
 
         if ($entity instanceof Currencies) {
             // Получить все алерты для данной валюты
-            $alerts = $this->entityManager->getRepository(Alerts::class)->findBy(['currencies' => $entity]);
+            $rules = $this->entityManager->getRepository(Rules::class)->findBy(['currencies' => $entity]);
 
-            foreach ($alerts as $alert) {
-                if ($entity->getRate() < $alert->getAlertRate()) {
-                    $this->sendEmailAlert($alert, $entity);
+            foreach ($rules as $rule) {
+                if ($entity->getRate() < $rule->getAlertRate() && $rule->getRuleStatus()) {
+                    $this->sendEmailAlert($rule, $entity);
+                    $rule->setRuleStatus(false);
+                    $this->entityManager->flush();
                 }
             }
         }
     }
 
-    private function sendEmailAlert(Alerts $alert, Currencies $currency): void
+    private function sendEmailAlert(Rules $rule, Currencies $currency): void
     {
         $transport = Transport::fromDsn('smtp://samaelasalart1@gmail.com:mkgtalykpbrubbra@smtp.gmail.com:587');
         $mailer = new Mailer($transport);
@@ -47,7 +49,7 @@ class CurrencyRateListener
             ->text('The plain text version of the message.')
             ->html('
             <h1 style="color: #ff0000;">
-                The rate of ' . $currency->getName() . ' is below/above ' . $alert->getAlertRate() . '. Current rate: ' . $currency->getRate() . '
+                The rate of ' . $currency->getName() . ' is below/above ' . $rule->getAlertRate() . '. Current rate: ' . $currency->getRate() . '
             </h1>');
 
         try {
