@@ -12,9 +12,9 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 
-class AlertsController extends AbstractController
+class RulesController extends AbstractController
 {
-    #[Route('/api/version1/rules', name: 'api_version1_rules', methods: ['POST'])]
+    #[Route('/api/version1/rules', name: 'api_version1_rules_add', methods: ['POST'])]
     public function addRule(Request $request, EntityManagerInterface $entityManager): JsonResponse
     {
         $data = json_decode($request->getContent(), true);
@@ -34,14 +34,58 @@ class AlertsController extends AbstractController
             return $this->json(['message' => 'User or currency not found'], Response::HTTP_NOT_FOUND);
         }
 
-        $alert = new Rules();
-        $alert->setUser($user);
-        $alert->setCurrency($currency);
-        $alert->setAlertRate($alertRate);
+        $rule = new Rules();
+        $rule->setUser($user);
+        $rule->setCurrency($currency);
+        $rule->setAlertRate($alertRate);
 
-        $entityManager->persist($alert);
+        $entityManager->persist($rule);
         $entityManager->flush();
 
-        return $this->json(['message' => 'Alert added successfully'], Response::HTTP_CREATED);
+        return $this->json(['message' => 'Rule added successfully'], Response::HTTP_CREATED);
+    }
+
+    #[Route('/api/version1/rules/{id}', name: 'api_version1_rules_update', methods: ['PUT'])]
+    public function updateRule(int $id, Request $request, EntityManagerInterface $entityManager): JsonResponse
+    {
+        $data = json_decode($request->getContent(), true);
+
+        if (!isset($data['currency_id'], $data['alert_rate'])) {
+            return $this->json(['message' => 'Missing required parameters'], Response::HTTP_BAD_REQUEST);
+        }
+
+        $currencyId = $data['currency_id'];
+        $alertRate = $data['alert_rate'];
+
+        $rule = $entityManager->getRepository(Rules::class)->find($id);
+        if (!$rule) {
+            return $this->json(['message' => 'Rule not found'], Response::HTTP_NOT_FOUND);
+        }
+
+        $currency = $entityManager->getRepository(Currencies::class)->find($currencyId);
+        if (!$currency) {
+            return $this->json(['message' => 'Currency not found'], Response::HTTP_NOT_FOUND);
+        }
+
+        $rule->setCurrency($currency);
+        $rule->setAlertRate($alertRate);
+
+        $entityManager->flush();
+
+        return $this->json(['message' => 'Rule updated successfully'], Response::HTTP_OK);
+    }
+
+    #[Route('/api/version1/rules/{id}', name: 'api_version1_rules_delete', methods: ['DELETE'])]
+    public function deleteRule(int $id, EntityManagerInterface $entityManager): JsonResponse
+    {
+        $rule = $entityManager->getRepository(Rules::class)->find($id);
+        if (!$rule) {
+            return $this->json(['message' => 'Rule not found'], Response::HTTP_NOT_FOUND);
+        }
+
+        $entityManager->remove($rule);
+        $entityManager->flush();
+
+        return $this->json(['message' => 'Rule deleted successfully'], Response::HTTP_OK);
     }
 }
