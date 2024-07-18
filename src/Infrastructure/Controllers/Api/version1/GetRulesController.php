@@ -2,7 +2,7 @@
 
 namespace App\Infrastructure\Controllers\Api\version1;
 
-use App\Infrastructure\Database\Entity\Alerts;
+use App\Infrastructure\Database\Entity\Rules;
 use App\Infrastructure\Database\Entity\Users;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -10,10 +10,10 @@ use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
 
-class GetAlertsController extends AbstractController
+class GetRulesController extends AbstractController
 {
-    #[Route('/api/version1/get-alerts', name: 'api_version1_get_alerts', methods: ['GET'])]
-    public function getAlerts(Request $request, EntityManagerInterface $entityManager): JsonResponse
+    #[Route('/api/version1/get-rules', name: 'api_version1_get_rules', methods: ['GET'])]
+    public function getRules(Request $request, EntityManagerInterface $entityManager): JsonResponse
     {
         $userId = $request->query->get('user_id');
 
@@ -27,19 +27,19 @@ class GetAlertsController extends AbstractController
             return $this->json(['message' => 'User not found'], JsonResponse::HTTP_NOT_FOUND);
         }
 
-        $alerts = $entityManager->getRepository(Alerts::class)->findBy(['user' => $user]);
+        $rules = $entityManager->getRepository(Rules::class)->findBy(['user' => $user]);
 
-        $alertsData = array_map(function (Alerts $alert) {
+        $rulesData = array_map(function (Rules $rule) {
             return [
-                'id' => $alert->getId(),
-                'user_id' => $alert->getUser()->getUserId(),
+                'id' => $rule->getId(),
+                'user_id' => $rule->getUser()->getUserId(),
                 'currency' => [
-                    'name' => $alert->getCurrency()->getName(),
+                    'name' => $rule->getCurrency()->getName(),
                 ],
-                'alert_rate' => $alert->getAlertRate(),
+                'alert_rate' => $rule->getAlertRate(),
             ];
-        }, $alerts);
+        }, $rules);
 
-        return $this->json($alertsData, JsonResponse::HTTP_OK);
+        return $this->json($rulesData, JsonResponse::HTTP_OK);
     }
 }

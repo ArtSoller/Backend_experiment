@@ -2,11 +2,11 @@
 
 namespace App\Infrastructure\Database\Entity;
 
-use App\Infrastructure\Database\Repository\AlertsRepository;
+use App\Infrastructure\Database\Repository\RulesRepository;
 use Doctrine\ORM\Mapping as ORM;
 
-#[ORM\Entity(repositoryClass: AlertsRepository::class)]
-class Alerts
+#[ORM\Entity(repositoryClass: RulesRepository::class)]
+class Rules
 {
     #[ORM\Id]
     #[ORM\GeneratedValue]

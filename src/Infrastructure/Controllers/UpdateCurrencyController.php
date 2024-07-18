@@ -7,9 +7,9 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use App\Infrastructure\Database\Entity\Currencies;
 
-class updateCurrencyController extends AbstractController
+class UpdateCurrencyRate extends AbstractController
 {
-    public function updateCurrencyRate(Request $request, EntityManagerInterface $entityManager): Response
+    public function UpdateCurrencyRate(Request $request, EntityManagerInterface $entityManager): Response
     {
         // Получить название валюты и курс из запроса
         $currencyName = $request->query->get('name');
