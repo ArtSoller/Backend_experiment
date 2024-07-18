@@ -10,7 +10,7 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
 
-class CurrenciesController extends AbstractController
+class CurrenciesSearchController extends AbstractController
 {
     #[Route('/api/version1/currencies', name: 'api_version1_currencies', methods: ['GET'])]
     public function getCurrencies(Request $request, EntityManagerInterface $entityManager): JsonResponse

@@ -37,6 +37,7 @@ class GetRulesController extends AbstractController
                     'name' => $rule->getCurrency()->getName(),
                 ],
                 'alert_rate' => $rule->getAlertRate(),
+                'rule_status' => $rule->getRuleStatus(),
             ];
         }, $rules);
 
