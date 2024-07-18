@@ -24,6 +24,9 @@ class Rules
     #[ORM\Column]
     private ?float $alertRate = null;
 
+    #[ORM\Column]
+    private ?bool $ruleStatus = true;
+
     public function getId(): ?int
     {
         return $this->id;
@@ -59,6 +62,18 @@ class Rules
     public function setAlertRate(float $alertRate): static
     {
         $this->alertRate = $alertRate;
+
+        return $this;
+    }
+
+    public function getRuleStatus(): ?bool
+    {
+        return $this->ruleStatus;
+    }
+
+    public function setRuleStatus(bool $ruleStatus): static
+    {
+        $this->ruleStatus = $ruleStatus;
 
         return $this;
     }

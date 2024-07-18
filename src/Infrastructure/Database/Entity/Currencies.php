@@ -29,12 +29,12 @@ class Currencies
         return $this->currency_id;
     }
 
-    #[ORM\OneToMany(targetEntity: Alerts::class, mappedBy: 'currency')]
-    private Collection $alerts;
+    #[ORM\OneToMany(targetEntity: Rules::class, mappedBy: 'currency')]
+    private Collection $rules;
 
     public function __construct()
     {
-        $this->alerts = new ArrayCollection();
+        $this->rules = new ArrayCollection();
     }
 
     public function getName(): ?string
@@ -73,14 +73,14 @@ class Currencies
         return $this;
     }
 
-    public function getAlerts(): ArrayCollection
+    public function getRules(): ArrayCollection
     {
-        return $this->alerts;
+        return $this->rules;
     }
 
-    public function setAlerts(ArrayCollection $alerts): static
+    public function setRules(ArrayCollection $rules): static
     {
-        $this->alerts = $alerts;
+        $this->rules = $rules;
 
         return $this;
     }

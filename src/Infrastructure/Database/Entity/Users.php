@@ -37,13 +37,13 @@ class Users implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\ManyToMany(targetEntity: Roles::class)]
     private Collection $user_roles;
 
-    #[ORM\OneToMany(targetEntity: Alerts::class, mappedBy: 'user')]
-    private Collection $alerts;
+    #[ORM\OneToMany(targetEntity: Rules::class, mappedBy: 'user')]
+    private Collection $rules;
 
     public function __construct()
     {
         $this->user_roles = new ArrayCollection();
-        $this->alerts = new ArrayCollection();
+        $this->rules = new ArrayCollection();
     }
     public function getUserId(): ?Ulid
     {
@@ -100,38 +100,15 @@ class Users implements UserInterface, PasswordAuthenticatedUserInterface
         return $this;
     }
 
-    public function getAlerts(): ArrayCollection
+    public function getRules(): ArrayCollection
     {
-        return $this->alerts;
+        return $this->rules;
     }
 
-    public function setAlerts(ArrayCollection $alerts): static
+    public function setRules(ArrayCollection $rules): static
     {
-        $this->alerts = $alerts;
+        $this->rules = $rules;
 
-        return $this;
-    }
-
-//    public function getSubscription(): ArrayCollection
-//    {
-//        return $this->subscription;
-//    }
-//
-//    public function setSubscription(ArrayCollection $subscription): static
-//    {
-//        $this->subscription = $subscription;
-//
-//        return $this;
-//    }
-
-    public function getGenerationRule(): ?GenerationRules
-    {
-        return $this->generationRule;
-    }
-
-    public function setGenerationRule(?GenerationRules $generationRule): static
-    {
-        $this->generationRule = $generationRule;
         return $this;
     }
 
