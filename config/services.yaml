@@ -26,5 +26,9 @@ services:
         tags:
             - { name: doctrine.event_listener, event: postUpdate }
 
+    App\Service\CurrencyRateService:
+        arguments:
+            $apiKey: '%env(EXCHANGERATE_API_KEY)%'
+
     # add more service definitions when explicit configuration is needed
     # please note that last definitions always *replace* previous ones
