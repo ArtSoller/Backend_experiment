@@ -12,4 +12,11 @@ class CurrenciesRepository extends ServiceEntityRepository
     {
         parent::__construct($registry, Currencies::class);
     }
+
+    public function findRateByCurrencyId(int $currencyId): ?float
+    {
+        $currency = $this->find($currencyId);
+
+        return $currency ? $currency->getRate() : null;
+    }
 }
