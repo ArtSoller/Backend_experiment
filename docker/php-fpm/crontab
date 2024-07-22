@@ -1,0 +1,1 @@
+*/15 * * * * /usr/local/bin/php /var/www/bin/console app:update-currency-rates >> /var/log/cron.log 2>&1

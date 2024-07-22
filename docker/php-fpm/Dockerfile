@@ -9,6 +9,7 @@ RUN apt-get update -y && apt-get install -y \
     curl \
     libicu-dev \
     libpq-dev \
+    cron \
     libxslt-dev && \
     docker-php-ext-install intl pdo_pgsql xsl && \
     pecl install xdebug && docker-php-ext-enable xdebug
@@ -32,6 +33,19 @@ WORKDIR /var/www
 COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
 #RUN composer install --no-interaction
 
-CMD php-fpm
+COPY ./docker/php-fpm/crontab /etc/cron.d/my-cron
+
+RUN chmod 0644 /etc/cron.d/my-cron
+
+# Применяем crontab
+RUN crontab /etc/cron.d/my-cron
+
+# Создаем лог файл для cron
+RUN touch /var/log/cron.log
+
+# Запуск cron и php-fpm
+CMD ["sh", "-c", "cron && php-fpm"]
+
+#CMD php-fpm
 
 EXPOSE 9000
