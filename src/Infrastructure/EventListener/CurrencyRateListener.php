@@ -29,7 +29,7 @@ class CurrencyRateListener
             $rules = $this->entityManager->getRepository(Rules::class)->findBy(['currencies' => $entity]);
 
             foreach ($rules as $rule) {
-                if ($entity->getRate() < $rule->getAlertRate() && $rule->getRuleStatus()) {
+                if ($entity->getRate() > $rule->getAlertRate() && $rule->getRuleStatus()) {
                     $this->sendEmailAlert($rule, $entity);
                     $rule->setRuleStatus(false);
                     $this->entityManager->flush();
@@ -48,9 +48,21 @@ class CurrencyRateListener
             ->subject('Currency Alert: ' . $currency->getName() . ' Rate Alert')
             ->text('The plain text version of the message.')
             ->html('
-            <h1 style="color: #ff0000;">
-                The rate of ' . $currency->getName() . ' is below/above ' . $rule->getAlertRate() . '. Current rate: ' . $currency->getRate() . '
-            </h1>');
+        <h1 style="color: #ff0000;">
+            The rate of ' . $currency->getName() . ' has changed relative to your ' . $rule->getAlertRate() . ' expectation. Current rate: ' . $currency->getRate() . '
+        </h1>
+        <p>Click the button below to take action:</p>
+        <a href="http://localhost:5173/" style="
+            display: inline-block;
+            padding: 10px 20px;
+            font-size: 16px;
+            color: white;
+            background-color: #007bff;
+            text-decoration: none;
+            border-radius: 5px;
+        ">
+            Take Action
+        </a>');
 
         try {
             $mailer->send($email);
