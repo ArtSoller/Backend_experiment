@@ -28,7 +28,7 @@ class CurrenciesSearchController extends AbstractController
         $response = [];
         foreach ($currencies as $currency) {
             $response[] = [
-                'id' => $currency->getCurrencyId(),
+                'currency_id' => $currency->getCurrencyId(),
                 'name' => $currency->getName(),
             ];
         }
