@@ -32,10 +32,8 @@ class CurrencyRateService
 
         $data = $response->toArray();
 
-        // Получаем курс USD к RUB
         $usdToRub = $data['rates']['RUB'];
 
-        // Преобразуем курсы относительно RUB
         $rates = [];
         foreach ($data['rates'] as $currency => $rate) {
             $rates[$currency] = $usdToRub / $rate;

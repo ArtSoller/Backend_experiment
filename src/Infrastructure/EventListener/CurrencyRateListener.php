@@ -25,7 +25,6 @@ class CurrencyRateListener
         $entity = $event->getObject();
 
         if ($entity instanceof Currencies) {
-            // Получить все алерты для данной валюты
             $rules = $this->entityManager->getRepository(Rules::class)->findBy(['currencies' => $entity]);
 
             foreach ($rules as $rule) {

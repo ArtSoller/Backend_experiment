@@ -28,9 +28,9 @@ class InactiveCountController extends AbstractController
         $count = $entityManager->getRepository(Rules::class)
             ->createQueryBuilder('r')
             ->select('COUNT(r.id)')
-            ->where('r.user = :user') // Исправлено
+            ->where('r.user = :user')
             ->andWhere('r.ruleStatus = false')
-            ->setParameter('user', $userId) // Исправлено
+            ->setParameter('user', $userId)
             ->getQuery()
             ->getSingleScalarResult();
 

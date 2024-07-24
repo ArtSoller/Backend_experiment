@@ -17,7 +17,6 @@ class SendEmailController extends AbstractController
     {
         $transport = Transport::fromDsn('smtp://samaelasalart1@gmail.com:mkgtalykpbrubbra@smtp.gmail.com:587');
 
-        // Create an Email object
         $email = (new Email())
             ->from('samaelasalart1@gmail.com')
             ->to('onebelouspiece@gmail.com')
@@ -34,13 +33,10 @@ class SendEmailController extends AbstractController
         $mailer = new Mailer($transport);
 
         try {
-            // Send email
             $mailer->send($email);
 
-            // Display success message
             return new Response('<h1>Email sent successfully!</h1>', Response::HTTP_OK);
         } catch (TransportExceptionInterface $e) {
-            // Display error message
             return new Response('<h1>Error sending email.</h1>', Response::HTTP_INTERNAL_SERVER_ERROR);
         }
     }

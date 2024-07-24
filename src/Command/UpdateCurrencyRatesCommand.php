@@ -35,10 +35,8 @@ class UpdateCurrencyRatesCommand extends Command
     {
         $output->writeln('Fetching currency rates...');
 
-        // Получаем данные с API
         $rates = $this->currencyRateService->fetchCurrencyRates();
 
-        // Логика сравнения и обновления базы данных
         $repository = $this->entityManager->getRepository(Currencies::class);
 
         foreach ($rates as $currency => $rate) {
@@ -47,7 +45,7 @@ class UpdateCurrencyRatesCommand extends Command
             if ($existingCurrency) {
                 if ($existingCurrency->getRate() != $rate) {
                     $existingCurrency->setRate($rate);
-                    $existingCurrency->setExpert($existingCurrency->getExpert()); // Убедитесь, что значение установлено
+                    $existingCurrency->setExpert($existingCurrency->getExpert());
                     $this->entityManager->persist($existingCurrency);
                     $output->writeln("Updated rate for $currency: $rate");
                 }
@@ -55,7 +53,7 @@ class UpdateCurrencyRatesCommand extends Command
         }
 
         $this->entityManager->flush();
-        $this->entityManager->clear(); // Добавьте этот вызов
+        $this->entityManager->clear();
 
         $output->writeln('Currency rates updated successfully.');
 

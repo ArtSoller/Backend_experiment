@@ -11,7 +11,6 @@ class UpdateCurrencyController extends AbstractController
 {
     public function updateCurrencyRate(Request $request, EntityManagerInterface $entityManager): Response
     {
-        // Получить название валюты и курс из запроса
         $currencyName = $request->query->get('name');
         $rate = $request->query->get('rate');
 
@@ -19,17 +18,14 @@ class UpdateCurrencyController extends AbstractController
             return new Response('Currency name or rate parameter is missing', Response::HTTP_BAD_REQUEST);
         }
 
-        // Найти сущность валюты по имени
         $currency = $entityManager->getRepository(Currencies::class)->findOneBy(['name' => $currencyName]);
 
         if (!$currency) {
             throw $this->createNotFoundException('No currency found for name ' . $currencyName);
         }
 
-        // Обновить значение курса
         $currency->setRate($rate);
 
-        // Сохранить изменения в базе данных
         $entityManager->flush();
 
         return new Response('Currency rate updated successfully');
