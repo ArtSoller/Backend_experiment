@@ -23,8 +23,9 @@ services:
     App\Infrastructure\EventListener\CurrencyRateListener:
         arguments:
             $entityManager: '@doctrine.orm.entity_manager'
-        tags:
-            - { name: doctrine.event_listener, event: postUpdate }
+            $emailAlertService: '@App\Service\EmailAlertService'
+
+    App\Service\EmailAlertService: ~
 
     App\Service\CurrencyRateService:
         arguments:

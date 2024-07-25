@@ -4,20 +4,18 @@ namespace App\Infrastructure\EventListener;
 use Doctrine\ORM\Event\PostUpdateEventArgs;
 use App\Infrastructure\Database\Entity\Currencies;
 use App\Infrastructure\Database\Entity\Rules;
-use Symfony\Component\Mailer\Mailer;
-use Symfony\Component\Mailer\Transport;
-use Symfony\Component\Mime\Email;
-use Symfony\Component\Mailer\Exception\TransportExceptionInterface;
 use Doctrine\ORM\EntityManagerInterface;
-
+use App\Service\EmailAlertService;
 
 class CurrencyRateListener
 {
     private EntityManagerInterface $entityManager;
+    private EmailAlertService $emailAlertService;
 
-    public function __construct(EntityManagerInterface $entityManager)
+    public function __construct(EntityManagerInterface $entityManager, EmailAlertService $emailAlertService)
     {
         $this->entityManager = $entityManager;
+        $this->emailAlertService = $emailAlertService;
     }
 
     public function postUpdate(PostUpdateEventArgs $event): void
@@ -29,43 +27,11 @@ class CurrencyRateListener
 
             foreach ($rules as $rule) {
                 if ($entity->getRate() > $rule->getAlertRate() && $rule->getRuleStatus()) {
-                    $this->sendEmailAlert($rule, $entity);
+                    $this->emailAlertService->sendEmailAlert($rule, $entity);
                     $rule->setRuleStatus(false);
                     $this->entityManager->flush();
                 }
             }
-        }
-    }
-
-    private function sendEmailAlert(Rules $rule, Currencies $currency): void
-    {
-        $transport = Transport::fromDsn('smtp://samaelasalart1@gmail.com:mkgtalykpbrubbra@smtp.gmail.com:587');
-        $mailer = new Mailer($transport);
-        $email = (new Email())
-            ->from('samaelasalart1@gmail.com')
-            ->to('onebelouspiece@gmail.com')
-            ->subject('Currency Alert: ' . $currency->getName() . ' Rate Alert')
-            ->text('The plain text version of the message.')
-            ->html('
-        <h1 style="color: #ff0000;">
-            The rate of ' . $currency->getName() . ' has changed relative to your ' . $rule->getAlertRate() . ' expectation. Current rate: ' . $currency->getRate() . '
-        </h1>
-        <p>Click the button below to take action:</p>
-        <a href="http://localhost:5173/" style="
-            display: inline-block;
-            padding: 10px 20px;
-            font-size: 16px;
-            color: white;
-            background-color: #007bff;
-            text-decoration: none;
-            border-radius: 5px;
-        ">
-            Take Action
-        </a>');
-
-        try {
-            $mailer->send($email);
-        } catch (TransportExceptionInterface $e) {
         }
     }
 }
