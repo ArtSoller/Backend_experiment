@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Infrastructure\Controllers\Api\version1;
+namespace App\Infrastructure\Controllers\Api\version1\Manage;
 
 use App\Infrastructure\Database\Entity\Rules;
 use Doctrine\ORM\EntityManagerInterface;
@@ -20,7 +20,7 @@ class ActivityRuleController extends AbstractController
             return $this->json(['message' => 'Rule not found'], Response::HTTP_NOT_FOUND);
         }
 
-        $rule->setRuleStatus(!$rule->getRuleStatus()); // Предполагаем, что метод setRuleStatus существует в сущности Rules
+        $rule->setRuleStatus(!$rule->getRuleStatus());
         $entityManager->persist($rule);
         $entityManager->flush();
 

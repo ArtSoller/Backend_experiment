@@ -1,5 +1,5 @@
 <?php
-namespace App\Infrastructure\Controllers\Api\version1;
+namespace App\Infrastructure\Controllers\Api\version1\Display;
 
 use App\Infrastructure\Database\Repository\CurrenciesRepository;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;

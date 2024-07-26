@@ -1,16 +1,15 @@
 <?php
 
-namespace App\Infrastructure\Controllers\Api\version1;
+namespace App\Infrastructure\Controllers\Auth;
 
 use App\infrastructure\database\Entity\Roles;
 use App\Infrastructure\Database\Entity\Users;
-
 use Doctrine\ORM\EntityManagerInterface;
 use Lexik\Bundle\JWTAuthenticationBundle\Services\JWTTokenManagerInterface;
-use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 use Symfony\Component\Routing\Attribute\Route;
 
 class RegistrationController extends AbstractController

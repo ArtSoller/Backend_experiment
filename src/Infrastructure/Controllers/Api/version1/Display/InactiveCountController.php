@@ -1,13 +1,13 @@
 <?php
-namespace App\Infrastructure\Controllers\Api\version1;
+namespace App\Infrastructure\Controllers\Api\version1\Display;
 
+use App\Infrastructure\Database\Entity\Rules;
+use App\Infrastructure\Database\Entity\Users;
+use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
-use Doctrine\ORM\EntityManagerInterface;
-use App\Infrastructure\Database\Entity\Rules;
-use App\Infrastructure\Database\Entity\Users;
 
 class InactiveCountController extends AbstractController
 {
