@@ -22,7 +22,10 @@ class Rules
     private ?Currencies $currencies;
 
     #[ORM\Column]
-    private ?float $alertRate = null;
+    private ?float $upperAlertRate = null;
+
+    #[ORM\Column]
+    private ?float $lowerAlertRate = null;
 
     #[ORM\Column]
     private ?bool $ruleStatus = true;
@@ -54,15 +57,25 @@ class Rules
         return $this;
     }
 
-    public function getAlertRate(): ?float
+    public function getUpperAlertRate(): ?float
     {
-        return $this->alertRate;
+        return $this->upperAlertRate;
     }
 
-    public function setAlertRate(float $alertRate): static
+    public function setUpperAlertRate(float $upperAlertRate): static
     {
-        $this->alertRate = $alertRate;
+        $this->upperAlertRate = $upperAlertRate;
+        return $this;
+    }
 
+    public function getLowerAlertRate(): ?float
+    {
+        return $this->lowerAlertRate;
+    }
+
+    public function setLowerAlertRate(float $lowerAlertRate): static
+    {
+        $this->lowerAlertRate = $lowerAlertRate;
         return $this;
     }
 
@@ -74,7 +87,6 @@ class Rules
     public function setRuleStatus(bool $ruleStatus): static
     {
         $this->ruleStatus = $ruleStatus;
-
         return $this;
     }
 }

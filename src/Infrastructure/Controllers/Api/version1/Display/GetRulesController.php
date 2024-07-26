@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Infrastructure\Controllers\Api\version1;
+namespace App\Infrastructure\Controllers\Api\version1\Display;
 
 use App\Infrastructure\Database\Entity\Rules;
 use App\Infrastructure\Database\Entity\Users;
@@ -37,7 +37,8 @@ class GetRulesController extends AbstractController
                     'currency_id' => $rule->getCurrency()->getCurrencyId(),
                     'name' => $rule->getCurrency()->getName(),
                 ],
-                'alert_rate' => $rule->getAlertRate(),
+                'upper_alert_rate' => $rule->getUpperAlertRate(),
+                'lower_alert_rate' => $rule->getLowerAlertRate(),
                 'rule_status' => $rule->getRuleStatus(),
             ];
         }, $rules);

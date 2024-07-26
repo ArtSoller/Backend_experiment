@@ -1,10 +1,10 @@
 <?php
 
-namespace App\Infrastructure\Controllers\Api\version1;
+namespace App\Infrastructure\Controllers\Api\version1\Manage;
 
 use App\Infrastructure\Database\Entity\Currencies;
-use App\Infrastructure\Database\Entity\Users;
 use App\Infrastructure\Database\Entity\Rules;
+use App\Infrastructure\Database\Entity\Users;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -19,13 +19,14 @@ class RulesController extends AbstractController
     {
         $data = json_decode($request->getContent(), true);
 
-        if (!isset($data['currency_id'], $data['alert_rate'])) {
+        if (!isset($data['currency_id'], $data['upper_alert_rate'], $data['lower_alert_rate'])) {
             return $this->json(['message' => 'Missing required parameters'], Response::HTTP_BAD_REQUEST);
         }
 
         $userId = $data['user_id'];
         $currencyId = $data['currency_id'];
-        $alertRate = $data['alert_rate'];
+        $upperAlertRate = $data['upper_alert_rate'];
+        $lowerAlertRate = $data['lower_alert_rate'];
 
 
         $user = $entityManager->getRepository(Users::class)->find($userId);
@@ -37,7 +38,8 @@ class RulesController extends AbstractController
         $rule = new Rules();
         $rule->setUser($user);
         $rule->setCurrency($currency);
-        $rule->setAlertRate($alertRate);
+        $rule->setUpperAlertRate($upperAlertRate);
+        $rule->setLowerAlertRate($lowerAlertRate);
 
         $entityManager->persist($rule);
         $entityManager->flush();
@@ -50,12 +52,13 @@ class RulesController extends AbstractController
     {
         $data = json_decode($request->getContent(), true);
 
-        if (!isset($data['currency_id'], $data['alert_rate'])) {
+        if (!isset($data['currency_id'], $data['upper_alert_rate'], $data['lower_alert_rate'])) {
             return $this->json(['message' => 'Missing required parameters'], Response::HTTP_BAD_REQUEST);
         }
 
         $currencyId = $data['currency_id'];
-        $alertRate = $data['alert_rate'];
+        $upperAlertRate = $data['upper_alert_rate'];
+        $lowerAlertRate = $data['lower_alert_rate'];
 
         $rule = $entityManager->getRepository(Rules::class)->find($id);
         if (!$rule) {
@@ -68,7 +71,8 @@ class RulesController extends AbstractController
         }
 
         $rule->setCurrency($currency);
-        $rule->setAlertRate($alertRate);
+        $rule->setUpperAlertRate($upperAlertRate);
+        $rule->setLowerAlertRate($lowerAlertRate);
 
         $entityManager->flush();
 
