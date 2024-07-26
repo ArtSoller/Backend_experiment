@@ -3,7 +3,6 @@
 namespace App\Infrastructure\Controllers\Admin;
 
 use App\Infrastructure\Database\Entity\Currencies;
-use App\Infrastructure\Database\Entity\Subscriptions;
 
 use App\Infrastructure\Database\Entity\News;
 use App\Infrastructure\Database\Entity\Users;
@@ -32,7 +31,6 @@ class DashboardController extends AbstractDashboardController
         yield MenuItem::linkToDashboard('Dashboard', 'fa fa-home');
         yield MenuItem::section('Entities');
 //        yield MenuItem::linkToCrud('Currencies', 'fas fa-coins', Currencies::class);
-        //        yield MenuItem::linkToCrud('Subscriptions', 'fas fa-bell', Subscriptions::class);
 
         yield MenuItem::linkToCrud('News', 'fas fa-newspaper', News::class);
         yield MenuItem::section('Users Management');
