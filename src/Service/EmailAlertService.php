@@ -18,8 +18,11 @@ class EmailAlertService
         $this->mailer = new Mailer($transport);
     }
 
-    public function sendEmailAlert(Rules $rule, Currencies $currency): void
+    public function sendEmailAlert(Rules $rule, Currencies $currency, string $crossedBoundary): void
     {
+        $boundaryRate = $crossedBoundary === 'upper' ? $rule->getUpperAlertRate() : $rule->getLowerAlertRate();
+        $boundaryText = $crossedBoundary === 'upper' ? 'exceeded' : 'dropped below';
+
         $email = (new Email())
             ->from('samaelasalart1@gmail.com')
             ->to('onebelouspiece@gmail.com')
@@ -27,7 +30,7 @@ class EmailAlertService
             ->text('The plain text version of the message.')
             ->html('
             <h1 style="color: #ff0000;">
-                The rate of ' . $currency->getName() . ' has changed relative to your ' . $rule->getAlertRate() . ' expectation. Current rate: ' . $currency->getRate() . '
+                The rate of ' . $currency->getName() . ' has ' . $boundaryText . ' your ' . $boundaryRate . ' expectation. Current rate: ' . $currency->getRate() . '
             </h1>
             <p>Click the button below to take action:</p>
             <a href="http://localhost:5173/" style="
@@ -45,7 +48,8 @@ class EmailAlertService
         try {
             $this->mailer->send($email);
         } catch (TransportExceptionInterface $e) {
-            // Handle the exception as needed
+            // Log the error or handle it as needed
         }
     }
 }
+

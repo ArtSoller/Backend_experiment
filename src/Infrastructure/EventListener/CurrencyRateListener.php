@@ -26,8 +26,16 @@ class CurrencyRateListener
             $rules = $this->entityManager->getRepository(Rules::class)->findBy(['currencies' => $entity]);
 
             foreach ($rules as $rule) {
-                if ($entity->getRate() > $rule->getAlertRate() && $rule->getRuleStatus()) {
-                    $this->emailAlertService->sendEmailAlert($rule, $entity);
+                $crossedBoundary = '';
+
+                if ($entity->getRate() > $rule->getUpperAlertRate()) {
+                    $crossedBoundary = 'upper';
+                } elseif ($entity->getRate() < $rule->getLowerAlertRate()) {
+                    $crossedBoundary = 'lower';
+                }
+
+                if ($crossedBoundary !== '' && $rule->getRuleStatus()) {
+                    $this->emailAlertService->sendEmailAlert($rule, $entity, $crossedBoundary);
                     $rule->setRuleStatus(false);
                     $this->entityManager->flush();
                 }
