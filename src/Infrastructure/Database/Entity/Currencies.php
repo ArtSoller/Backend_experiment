@@ -18,16 +18,11 @@ class Currencies
     #[ORM\Column(length: 255)]
     private ?string $name = null;
 
-    #[ORM\Column]
-    private ?float $rate = null;
+    #[ORM\Column(type: 'json')]
+    private array $rates = [];
 
     #[ORM\Column]
     private ?int $expert_rating = null;
-
-    public function getCurrencyId(): ?int
-    {
-        return $this->currency_id;
-    }
 
     #[ORM\OneToMany(targetEntity: Rules::class, mappedBy: 'currency')]
     private Collection $rules;
@@ -35,6 +30,11 @@ class Currencies
     public function __construct()
     {
         $this->rules = new ArrayCollection();
+    }
+
+    public function getCurrencyId(): ?int
+    {
+        return $this->currency_id;
     }
 
     public function getName(): ?string
@@ -45,19 +45,20 @@ class Currencies
     public function setName(string $name): static
     {
         $this->name = $name;
-
         return $this;
     }
 
     public function getRate(): ?float
     {
-        return $this->rate;
+        return end($this->rates) ?: null;
     }
 
-    public function setRate(string $rate): static
+    public function setRate(float $rate): static
     {
-        $this->rate = $rate;
-
+        $this->rates[] = $rate;
+        if (count($this->rates) > 5) {
+            array_shift($this->rates);
+        }
         return $this;
     }
 
@@ -66,22 +67,31 @@ class Currencies
         return $this->expert_rating;
     }
 
-    public function setExpert(string $expert_rating): static
+    public function setExpert(int $expert_rating): static
     {
         $this->expert_rating = $expert_rating;
-
         return $this;
     }
 
-    public function getRules(): ArrayCollection
+    public function getRules(): Collection
     {
         return $this->rules;
     }
 
-    public function setRules(ArrayCollection $rules): static
+    public function setRules(Collection $rules): static
     {
         $this->rules = $rules;
+        return $this;
+    }
 
+    public function getRates(): array
+    {
+        return $this->rates;
+    }
+
+    public function setRates(array $rates): static
+    {
+        $this->rates = array_slice($rates, -5);
         return $this;
     }
 }
