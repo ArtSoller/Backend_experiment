@@ -1,10 +1,10 @@
 <?php
 namespace App\Infrastructure\EventListener;
-
 use Doctrine\ORM\Event\PostUpdateEventArgs;
 use App\Infrastructure\Database\Entity\Currencies;
 use App\Infrastructure\Database\Entity\Rules;
 use Doctrine\ORM\EntityManagerInterface;
+
 use App\Service\EmailAlertService;
 
 class CurrencyRateListener
@@ -21,7 +21,6 @@ class CurrencyRateListener
     public function postUpdate(PostUpdateEventArgs $event): void
     {
         $entity = $event->getObject();
-
         if ($entity instanceof Currencies) {
             $rules = $this->entityManager->getRepository(Rules::class)->findBy(['currencies' => $entity]);
 
@@ -39,7 +38,8 @@ class CurrencyRateListener
                     $rule->setRuleStatus(false);
                     $this->entityManager->flush();
                 }
-            }
-        }
-    }
+}
+}
+}
+
 }
