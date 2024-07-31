@@ -32,12 +32,10 @@ class CurrencyRateService
 
         $data = $response->toArray();
 
-        // Получение курса USD к RUB
         $usdToRub = $data['rates']['RUB'];
 
         $rates = [];
         foreach ($data['rates'] as $currency => $rate) {
-            // Вычисление курса и округление до 6 знаков после запятой
             $rates[$currency] = round($usdToRub / $rate, 3);
         }
 
